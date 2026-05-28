@@ -1,12 +1,16 @@
 import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from '../src/app.module'
 import { ExpressAdapter } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express = require('express')
 
-const expressApp = express()
+// Use the tsc-compiled output rather than the TypeScript source.
+// ncc (used by @vercel/node) cannot reliably bundle the NestJS
+// decorator chain, but it handles pre-compiled CommonJS just fine.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { AppModule } = require('../dist/app.module')
 
+const expressApp = express()
 let initPromise: Promise<void> | null = null
 
 function bootstrap(): Promise<void> {
