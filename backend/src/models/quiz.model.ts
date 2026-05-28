@@ -35,10 +35,10 @@ interface QuizQuestionInput {
   options: QuizOptionInput[]
 }
 
-export type CreateQuizInput = Omit<Quiz, 'id' | 'createdAt' | 'updatedAt'> & {
+export type CreateQuizInput = Omit<Quiz, 'id' | 'createdAt' | 'updatedAt' | 'questions'> & {
   questions: QuizQuestionInput[]
 }
-export type UpdateQuizInput = Partial<Omit<Quiz, 'id' | 'createdAt'>> & {
+export type UpdateQuizInput = Partial<Omit<Quiz, 'id' | 'createdAt' | 'questions'>> & {
   questions?: QuizQuestionInput[]
 }
 
