@@ -8,10 +8,8 @@
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
     "sourceMap": true,
-    "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": "./src",
-    "ignoreDeprecations": "5.0",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -25,5 +23,6 @@
       "@models/*": ["models/*"],
       "@features/*": ["features/*"]
     }
-  }
+  },
+  "include": ["src/**/*", "api/**/*"]
 }
