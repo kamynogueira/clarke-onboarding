@@ -1,18 +1,12 @@
 import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
+import { AppModule } from '../src/app.module'
 import { ExpressAdapter } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express = require('express')
 
-// Import from the pre-compiled tsc output so @vercel/node only needs to compile
-// this thin wrapper, avoiding ncc bundling NestJS TypeScript + path aliases
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { AppModule } = require('../dist/app.module')
-
 const expressApp = express()
 
-// Promise-based guard: concurrent cold-start requests share the same init promise
-// instead of racing to call NestFactory.create() on the same Express instance.
 let initPromise: Promise<void> | null = null
 
 function bootstrap(): Promise<void> {
