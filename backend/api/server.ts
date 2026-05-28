@@ -1,46 +1,56 @@
 import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from '../src/app.module'
 import { ExpressAdapter } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express = require('express')
 
-const server = express()
-let isReady = false
+// Import from the pre-compiled tsc output so @vercel/node only needs to compile
+// this thin wrapper, avoiding ncc bundling NestJS TypeScript + path aliases
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { AppModule } = require('../dist/app.module')
 
-async function bootstrap() {
-  if (isReady) return
+const expressApp = express()
 
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(server),
-    { logger: ['error', 'warn'] }
-  )
+// Promise-based guard: concurrent cold-start requests share the same init promise
+// instead of racing to call NestFactory.create() on the same Express instance.
+let initPromise: Promise<void> | null = null
 
-  app.setGlobalPrefix('api/v1')
+function bootstrap(): Promise<void> {
+  if (!initPromise) {
+    initPromise = (async () => {
+      const app = await NestFactory.create(
+        AppModule,
+        new ExpressAdapter(expressApp),
+        { logger: ['error', 'warn'] },
+      )
 
-  app.enableCors({
-    origin: process.env.FRONTEND_URL ?? '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  })
+      app.setGlobalPrefix('api/v1')
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Clarke Onboarding API')
-    .setDescription('API da plataforma de onboarding Clarke Energia')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build()
+      app.enableCors({
+        origin: process.env.FRONTEND_URL ?? '*',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+      })
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig)
-  SwaggerModule.setup('api/docs', app, document)
+      const swaggerConfig = new DocumentBuilder()
+        .setTitle('Clarke Onboarding API')
+        .setDescription('API da plataforma de onboarding Clarke Energia')
+        .setVersion('1.0')
+        .addBearerAuth()
+        .build()
 
-  await app.init()
-  isReady = true
+      const document = SwaggerModule.createDocument(app, swaggerConfig)
+      SwaggerModule.setup('api/docs', app, document)
+
+      await app.init()
+    })()
+  }
+
+  return initPromise
 }
 
 export default async function handler(req: any, res: any) {
   await bootstrap()
-  server(req, res)
+  expressApp(req, res)
 }
