@@ -1,15 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "api/server.ts": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/api/server.ts"
+      "source": "/(.*)",
+      "destination": "/api/server"
     }
   ]
 }
