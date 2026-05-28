@@ -1,0 +1,87 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        base: ['Poppins', 'sans-serif'],
+      },
+      colors: {
+        green: {
+          900: '#005931',
+          800: '#008C4C',
+          700: '#00BF6A',
+          600: '#19E58A',
+          500: '#00DF7C',
+          400: '#55ECBF',
+          300: '#96E9B6',
+          200: '#BEF4C1',
+          100: '#E6F9DC',
+        },
+        gray: {
+          900: '#222222',
+          800: '#2E2E2E',
+          700: '#404040',
+          600: '#595959',
+          500: '#818181',
+          400: '#9C9C9B',
+          300: '#C5C5C5',
+          200: '#E8E8E8',
+          100: '#F2F2F2',
+          50:  '#FAFAFA',
+        },
+        blue: {
+          900: '#002C80',
+          700: '#0047CC',
+          500: '#4787FF',
+          300: '#80ACFF',
+          100: '#CFDFFC',
+        },
+        yellow: {
+          900: '#AD7C00',
+          700: '#E0A000',
+          500: '#FFB834',
+          300: '#FFD07A',
+          100: '#FFF6E0',
+        },
+        red: {
+          900: '#991700',
+          700: '#E53919',
+          500: '#FF6347',
+          300: '#F5B0A3',
+          100: '#FFD4CC',
+        },
+        pink: {
+          500: '#FF156A',
+          100: '#FFB8D9',
+        },
+      },
+      borderRadius: {
+        sm: '10px',
+        md: '20px',
+        pill: '1000px',
+      },
+      boxShadow: {
+        elevation: '1px 1px 4px 0px rgba(34, 34, 34, 0.15)',
+      },
+      fontSize: {
+        'display-xl': '72px',
+        'display-lg': '64px',
+        'display-md': '56px',
+        'display-sm': '48px',
+        'heading-2xl': '36px',
+        'heading-xl': '32px',
+        'heading-lg': '28px',
+        'heading-md': '24px',
+        'heading-sm': '20px',
+        'heading-xs': '18px',
+        'body-lg': '16px',
+        'body-md': '14px',
+        'body-sm': '12px',
+        'caption-md': '10px',
+        'caption-sm': '8px',
+      },
+    },
+  },
+  plugins: [],
+}
