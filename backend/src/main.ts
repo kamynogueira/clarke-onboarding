@@ -11,11 +11,11 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1')
 
+  // TODO: restrict origin when auth is ready
   app.enableCors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
   })
 
   const swaggerConfig = new DocumentBuilder()
