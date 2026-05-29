@@ -24,11 +24,11 @@ function bootstrap(): Promise<void> {
 
       app.setGlobalPrefix('api/v1')
 
+      // TODO: restrict origin and restore credentials when auth is ready
       app.enableCors({
-        origin: process.env.FRONTEND_URL ?? '*',
+        origin: '*',
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
       })
 
       const swaggerConfig = new DocumentBuilder()
