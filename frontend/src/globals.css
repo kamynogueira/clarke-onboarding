@@ -126,9 +126,9 @@
 
   --z-dropdown: 10;
   --z-sticky: 20;
-  --z-drawer: 100;
+  --z-drawer: 145;
   --z-overlay: 140;
-  --z-modal: 150;
+  --z-modal: 160;
   --z-snackbar: 300;
   --z-tooltip: 500;
 }
