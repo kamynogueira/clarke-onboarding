@@ -10,6 +10,7 @@ interface ListResult<T> {
   data: T[]
   total: number
   loading: boolean
+  error: string | null
   filters: Record<string, any>
   page: number
   pageSize: number
@@ -24,6 +25,7 @@ export function useList<T, F extends Record<string, any> = Record<string, any>>(
   const [data, setData]       = useState<T[]>([])
   const [total, setTotal]     = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError]     = useState<string | null>(null)
   const [page, setPage]       = useState(0)
   const pageSize              = 20
   const [filters, setFilters] = useState<Record<string, any>>(defaultFilters)
@@ -43,6 +45,7 @@ export function useList<T, F extends Record<string, any> = Record<string, any>>(
       offset: String(page * pageSize),
     })
 
+    setError(null)
     api
       .get(`${endpoint}?${params}`)
       .then((res) => {
@@ -50,8 +53,11 @@ export function useList<T, F extends Record<string, any> = Record<string, any>>(
         setData(res.data.data ?? [])
         setTotal(res.data.total ?? 0)
       })
-      .catch(() => {
-        if (!cancelled) setData([])
+      .catch((err: any) => {
+        if (cancelled) return
+        const msg = err?.response?.data?.message ?? `Erro ao carregar dados (${err?.code ?? 'network'})`
+        setError(msg)
+        setData([])
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -65,5 +71,5 @@ export function useList<T, F extends Record<string, any> = Record<string, any>>(
     setPage(0)
   }, [])
 
-  return { data, total, loading, filters, page, pageSize, setFilter, setPage, refresh }
+  return { data, total, loading, error, filters, page, pageSize, setFilter, setPage, refresh }
 }

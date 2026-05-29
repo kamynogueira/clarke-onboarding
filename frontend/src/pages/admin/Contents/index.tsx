@@ -28,6 +28,7 @@ export function ContentsPage() {
   const [deletingContent, setDeletingContent] = useState<Content | null>(null)
 
   const list = useList<Content>({ endpoint: '/contents' })
+  if (list.error) console.error('[Contents] list error:', list.error)
 
   const crud = useCrud({
     endpoint: '/contents',

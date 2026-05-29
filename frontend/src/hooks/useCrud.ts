@@ -18,7 +18,11 @@ export function useCrud({ endpoint, onSuccess, onError }: UseCrudOptions) {
       onSuccess?.('create')
       return res.data.data
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? 'Erro ao criar registro'
+      const status = err?.response?.status
+      const msg = err?.response?.data?.message
+        ?? err?.response?.data?.error
+        ?? (status ? `Erro ${status} ao criar registro` : 'Erro de conexão — verifique a API')
+      console.error('[useCrud] create error:', { status, data: err?.response?.data, err })
       onError?.(msg)
       throw err
     } finally {
@@ -33,7 +37,11 @@ export function useCrud({ endpoint, onSuccess, onError }: UseCrudOptions) {
       onSuccess?.('update')
       return res.data.data
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? 'Erro ao atualizar registro'
+      const status = err?.response?.status
+      const msg = err?.response?.data?.message
+        ?? err?.response?.data?.error
+        ?? (status ? `Erro ${status} ao atualizar registro` : 'Erro de conexão — verifique a API')
+      console.error('[useCrud] update error:', { status, data: err?.response?.data, err })
       onError?.(msg)
       throw err
     } finally {
@@ -47,7 +55,11 @@ export function useCrud({ endpoint, onSuccess, onError }: UseCrudOptions) {
       await api.delete(`${endpoint}/${id}`)
       onSuccess?.('delete')
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? 'Erro ao remover registro'
+      const status = err?.response?.status
+      const msg = err?.response?.data?.message
+        ?? err?.response?.data?.error
+        ?? (status ? `Erro ${status} ao remover registro` : 'Erro de conexão — verifique a API')
+      console.error('[useCrud] delete error:', { status, data: err?.response?.data, err })
       onError?.(msg)
       throw err
     } finally {
