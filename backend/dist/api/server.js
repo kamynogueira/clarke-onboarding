@@ -6,7 +6,7 @@ const core_1 = require("@nestjs/core");
 const platform_express_1 = require("@nestjs/platform-express");
 const swagger_1 = require("@nestjs/swagger");
 const express = require("express");
-const { AppModule } = require('../dist/app.module');
+const { AppModule } = require('../dist/src/app.module');
 const expressApp = express();
 let initPromise = null;
 function bootstrap() {

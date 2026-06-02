@@ -8,7 +8,7 @@ import express = require('express')
 // ncc (used by @vercel/node) cannot reliably bundle the NestJS
 // decorator chain, but it handles pre-compiled CommonJS just fine.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { AppModule } = require('../dist/app.module')
+const { AppModule } = require('../dist/src/app.module')
 
 const expressApp = express()
 let initPromise: Promise<void> | null = null
