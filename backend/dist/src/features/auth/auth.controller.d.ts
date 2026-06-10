@@ -4,9 +4,8 @@ export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     login(dto: LoginDto): Promise<{
-        requiresTwoFactor: boolean;
+        customToken: string;
         uid: string;
-        message: string;
     }>;
     verify2FA(dto: Verify2FADto): Promise<{
         customToken: string;

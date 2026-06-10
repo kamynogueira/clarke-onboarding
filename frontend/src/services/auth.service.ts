@@ -11,9 +11,21 @@ export interface AuthUser {
   position: string
 }
 
-export async function requestLogin(email: string, password: string): Promise<{ uid: string }> {
+export async function requestLogin(email: string, password: string): Promise<AuthUser> {
   const { data } = await api.post('/auth/login', { email, password })
-  return data.data
+  const { customToken } = data.data
+
+  const credential = await signInWithCustomToken(auth, customToken)
+  const tokenResult = await credential.user.getIdTokenResult(true)
+
+  return {
+    uid: credential.user.uid,
+    email: (tokenResult.claims.userEmail as string) || credential.user.email || '',
+    name: (tokenResult.claims.displayName as string) || credential.user.displayName || '',
+    role: tokenResult.claims.role as 'admin' | 'collaborator',
+    team: (tokenResult.claims.team as string) || '',
+    position: (tokenResult.claims.position as string) || '',
+  }
 }
 
 export async function verify2FA(uid: string, code: string): Promise<AuthUser> {

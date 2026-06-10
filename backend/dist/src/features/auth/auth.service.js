@@ -34,12 +34,14 @@ let AuthService = AuthService_1 = class AuthService {
         const user = await this.userModel.findByEmail(email);
         if (!user)
             throw new common_1.UnauthorizedException('Credenciais inválidas');
-        await this.send2FACode(user.uid, user.email, user.name);
-        return {
-            requiresTwoFactor: true,
-            uid: user.uid,
-            message: 'Código de verificação enviado para o e-mail',
-        };
+        const customToken = await this.firebase.auth.createCustomToken(user.uid, {
+            role: user.role,
+            team: user.team,
+            position: user.position,
+            displayName: user.name,
+            userEmail: user.email,
+        });
+        return { customToken, uid: user.uid };
     }
     async send2FACode(uid, email, name) {
         const code = this.generateCode();
