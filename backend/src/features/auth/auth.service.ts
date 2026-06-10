@@ -88,6 +88,10 @@ export class AuthService {
 
     const customToken = await this.firebase.auth.createCustomToken(uid, {
       role: user.role,
+      team: user.team,
+      position: user.position,
+      displayName: user.name,
+      userEmail: user.email,
     })
 
     return { customToken }

@@ -5,6 +5,8 @@ import {
   useState,
   ReactNode,
 } from 'react'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '@/services/firebase'
 import { AuthUser } from '@/services/auth.service'
 
 interface AuthContextValue {
@@ -16,19 +18,28 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // TODO: remove mock user and restore Firebase auth when login is ready
-  const [user, setUser] = useState<AuthUser | null>({
-    uid: 'test-user',
-    email: 'test@clarke.com.br',
-    name: 'Test Admin',
-    role: 'admin',
-    team: '',
-    position: '',
-  })
-  const [loading] = useState(false)
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  useEffect(() => {}, [])
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const tokenResult = await firebaseUser.getIdTokenResult(true)
+        setUser({
+          uid: firebaseUser.uid,
+          email: (tokenResult.claims.userEmail as string) || firebaseUser.email || '',
+          name: (tokenResult.claims.displayName as string) || firebaseUser.displayName || '',
+          role: tokenResult.claims.role as 'admin' | 'collaborator',
+          team: (tokenResult.claims.team as string) || '',
+          position: (tokenResult.claims.position as string) || '',
+        })
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
+    })
+    return () => unsubscribe()
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user, loading, setUser }}>

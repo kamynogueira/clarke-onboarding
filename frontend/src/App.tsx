@@ -55,9 +55,8 @@ export function App() {
                 <Route path="/onboarding/trail/:trailId/content/:itemId" element={<ContentPage />} />
               </Route>
 
-              {/* Fallback — TODO: restore to /login when auth is ready */}
-              <Route path="/"    element={<Navigate to="/admin" replace />} />
-              <Route path="*"    element={<Navigate to="/admin" replace />} />
+              <Route path="/"    element={<Navigate to="/login" replace />} />
+              <Route path="*"    element={<Navigate to="/login" replace />} />
             </Routes>
           </Suspense>
         </SnackbarProvider>

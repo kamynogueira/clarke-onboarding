@@ -25,11 +25,11 @@ export async function verify2FA(uid: string, code: string): Promise<AuthUser> {
 
   return {
     uid: credential.user.uid,
-    email: credential.user.email ?? '',
-    name: credential.user.displayName ?? '',
+    email: (tokenResult.claims.userEmail as string) || credential.user.email || '',
+    name: (tokenResult.claims.displayName as string) || credential.user.displayName || '',
     role: tokenResult.claims.role as 'admin' | 'collaborator',
-    team: tokenResult.claims.team as string ?? '',
-    position: tokenResult.claims.position as string ?? '',
+    team: (tokenResult.claims.team as string) || '',
+    position: (tokenResult.claims.position as string) || '',
   }
 }
 

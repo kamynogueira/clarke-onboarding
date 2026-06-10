@@ -10,20 +10,20 @@ export declare const CreateUserSchema: z.ZodObject<{
     startDate: z.ZodString;
     twoFactorEnabled: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    role: "collaborator" | "admin";
     name: string;
     email: string;
     phone: string;
-    role: "admin" | "collaborator";
     position: string;
     team: string;
     startDate: string;
     twoFactorEnabled: boolean;
     password: string;
 }, {
+    role: "collaborator" | "admin";
     name: string;
     email: string;
     phone: string;
-    role: "admin" | "collaborator";
     position: string;
     team: string;
     startDate: string;
@@ -39,17 +39,17 @@ export declare const UpdateUserSchema: z.ZodObject<{
     startDate: z.ZodOptional<z.ZodString>;
     twoFactorEnabled: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    role?: "collaborator" | "admin" | undefined;
     name?: string | undefined;
     phone?: string | undefined;
-    role?: "admin" | "collaborator" | undefined;
     position?: string | undefined;
     team?: string | undefined;
     startDate?: string | undefined;
     twoFactorEnabled?: boolean | undefined;
 }, {
+    role?: "collaborator" | "admin" | undefined;
     name?: string | undefined;
     phone?: string | undefined;
-    role?: "admin" | "collaborator" | undefined;
     position?: string | undefined;
     team?: string | undefined;
     startDate?: string | undefined;
@@ -64,11 +64,11 @@ export declare const ListUsersSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     offset: number;
     limit: number;
-    role?: "admin" | "collaborator" | undefined;
+    role?: "collaborator" | "admin" | undefined;
     position?: string | undefined;
     team?: string | undefined;
 }, {
-    role?: "admin" | "collaborator" | undefined;
+    role?: "collaborator" | "admin" | undefined;
     position?: string | undefined;
     team?: string | undefined;
     offset?: number | undefined;

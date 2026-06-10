@@ -79,6 +79,10 @@ let AuthService = AuthService_1 = class AuthService {
         await this.userModel.clear2FACode(uid);
         const customToken = await this.firebase.auth.createCustomToken(uid, {
             role: user.role,
+            team: user.team,
+            position: user.position,
+            displayName: user.name,
+            userEmail: user.email,
         });
         return { customToken };
     }

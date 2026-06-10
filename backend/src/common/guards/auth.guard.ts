@@ -17,10 +17,27 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // TODO: remove this block when auth is ready
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+    if (isPublic) return true
+
     const request = context.switchToHttp().getRequest<Request>()
-    request['user'] = { uid: 'test-user', role: 'admin', email: 'test@clarke.com.br' }
-    return true
+    const token = this.extractToken(request)
+    if (!token) throw new UnauthorizedException('Token não fornecido')
+
+    try {
+      const decoded = await this.firebase.auth.verifyIdToken(token)
+      request['user'] = {
+        uid: decoded.uid,
+        email: decoded.email ?? '',
+        role: decoded['role'] ?? 'collaborator',
+      }
+      return true
+    } catch {
+      throw new UnauthorizedException('Token inválido ou expirado')
+    }
   }
 
   private extractToken(request: Request): string | null {

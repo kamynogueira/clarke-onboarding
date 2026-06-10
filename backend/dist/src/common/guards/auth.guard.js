@@ -13,15 +13,35 @@ exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const firebase_service_1 = require("../../core/firebase/firebase.service");
+const public_decorator_1 = require("../decorators/public.decorator");
 let AuthGuard = class AuthGuard {
     constructor(firebase, reflector) {
         this.firebase = firebase;
         this.reflector = reflector;
     }
     async canActivate(context) {
+        const isPublic = this.reflector.getAllAndOverride(public_decorator_1.IS_PUBLIC_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        if (isPublic)
+            return true;
         const request = context.switchToHttp().getRequest();
-        request['user'] = { uid: 'test-user', role: 'admin', email: 'test@clarke.com.br' };
-        return true;
+        const token = this.extractToken(request);
+        if (!token)
+            throw new common_1.UnauthorizedException('Token não fornecido');
+        try {
+            const decoded = await this.firebase.auth.verifyIdToken(token);
+            request['user'] = {
+                uid: decoded.uid,
+                email: decoded.email ?? '',
+                role: decoded['role'] ?? 'collaborator',
+            };
+            return true;
+        }
+        catch {
+            throw new common_1.UnauthorizedException('Token inválido ou expirado');
+        }
     }
     extractToken(request) {
         const auth = request.headers.authorization;
