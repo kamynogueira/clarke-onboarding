@@ -102,7 +102,7 @@ export function ContentPage() {
               )}
             </div>
 
-            {/* Embedded content */}
+            {/* Embedded content — gdoc / pdf */}
             {content.url && (item?.type === 'gdoc' || item?.type === 'pdf') && (
               <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] shadow-[var(--shadow-elevation)] overflow-hidden">
                 <iframe
@@ -115,7 +115,22 @@ export function ContentPage() {
               </div>
             )}
 
-            {content.url && item?.type === 'video' && (
+            {/* YouTube embed */}
+            {item?.type === 'video' && content.youtubeId && (
+              <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] shadow-[var(--shadow-elevation)] overflow-hidden aspect-video">
+                <iframe
+                  src={`https://www.youtube.com/embed/${content.youtubeId}`}
+                  className="w-full h-full"
+                  style={{ border: 'none' }}
+                  title={content.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            )}
+
+            {/* Video with direct URL (non-YouTube) */}
+            {item?.type === 'video' && !content.youtubeId && content.url && (
               <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] shadow-[var(--shadow-elevation)] overflow-hidden aspect-video">
                 <iframe
                   src={content.url}
@@ -129,9 +144,9 @@ export function ContentPage() {
             )}
 
             {/* Open externally link */}
-            {content.url && (
+            {(content.url || content.youtubeId) && (
               <a
-                href={content.url}
+                href={content.youtubeId ? `https://www.youtube.com/watch?v=${content.youtubeId}` : content.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-[12px] text-[var(--color-text-link)] hover:underline self-start"
