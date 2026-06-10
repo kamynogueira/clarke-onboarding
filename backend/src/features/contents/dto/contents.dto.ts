@@ -39,6 +39,15 @@ export const ListContentsSchema = z.object({
   offset: z.coerce.number().min(0).default(0),
 })
 
+export const ListLibraryContentsSchema = z.object({
+  type: z.enum(['pdf', 'video', 'gdoc']).optional(),
+  search: z.string().optional(),
+  sort: z.enum(['newest', 'oldest', 'az', 'za']).default('newest'),
+  limit: z.coerce.number().min(1).max(100).default(20),
+  offset: z.coerce.number().min(0).default(0),
+})
+
 export type CreateContentDto = z.infer<typeof CreateContentSchema>
 export type UpdateContentDto = z.infer<typeof UpdateContentSchema>
 export type ListContentsDto = z.infer<typeof ListContentsSchema>
+export type ListLibraryContentsDto = z.infer<typeof ListLibraryContentsSchema>

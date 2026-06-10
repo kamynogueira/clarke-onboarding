@@ -4,6 +4,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { SnackbarProvider } from '@/components/ui/Snackbar'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { AdminLayout } from '@/components/layout/AdminLayout'
+import { CollaboratorLayout } from '@/components/layout/CollaboratorLayout'
 
 const LoginPage     = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })))
 const Verify2FAPage = lazy(() => import('@/pages/Verify2FAPage').then(m => ({ default: m.Verify2FAPage })))
@@ -14,9 +15,11 @@ const TrailsPage   = lazy(() => import('@/pages/admin/Trails').then(m => ({ defa
 const ContentsPage = lazy(() => import('@/pages/admin/Contents').then(m => ({ default: m.ContentsPage })))
 const QuizzesPage  = lazy(() => import('@/pages/admin/Quizzes').then(m => ({ default: m.QuizzesPage })))
 
-const OnboardingHome  = lazy(() => import('@/pages/collaborator/Home').then(m => ({ default: m.OnboardingHome })))
-const TrailPage       = lazy(() => import('@/pages/collaborator/Trail').then(m => ({ default: m.TrailPage })))
-const ContentPage     = lazy(() => import('@/pages/collaborator/Content').then(m => ({ default: m.ContentPage })))
+const OnboardingHome         = lazy(() => import('@/pages/collaborator/Home').then(m => ({ default: m.OnboardingHome })))
+const TrailPage              = lazy(() => import('@/pages/collaborator/Trail').then(m => ({ default: m.TrailPage })))
+const ContentPage            = lazy(() => import('@/pages/collaborator/Content').then(m => ({ default: m.ContentPage })))
+const LibraryPage            = lazy(() => import('@/pages/collaborator/Library').then(m => ({ default: m.LibraryPage })))
+const LibraryContentViewer   = lazy(() => import('@/pages/collaborator/Library/ContentViewer').then(m => ({ default: m.LibraryContentViewer })))
 
 function PageLoader() {
   return (
@@ -50,9 +53,15 @@ export function App() {
 
               {/* Colaborador */}
               <Route element={<ProtectedRoute allowedRoles={['collaborator', 'admin']} />}>
-                <Route path="/onboarding"                element={<OnboardingHome />} />
-                <Route path="/onboarding/trail/:trailId" element={<TrailPage />} />
-                <Route path="/onboarding/trail/:trailId/content/:itemId" element={<ContentPage />} />
+                {/* Páginas com sidebar */}
+                <Route element={<CollaboratorLayout />}>
+                  <Route path="/onboarding"                element={<OnboardingHome />} />
+                  <Route path="/onboarding/library"        element={<LibraryPage />} />
+                </Route>
+                {/* Páginas imersivas (full-page, sem sidebar) */}
+                <Route path="/onboarding/trail/:trailId"                        element={<TrailPage />} />
+                <Route path="/onboarding/trail/:trailId/content/:itemId"        element={<ContentPage />} />
+                <Route path="/onboarding/library/:contentId"                    element={<LibraryContentViewer />} />
               </Route>
 
               <Route path="/"    element={<Navigate to="/login" replace />} />

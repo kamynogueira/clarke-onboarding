@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BookOpen, ChevronRight, LogOut } from 'lucide-react'
+import { BookOpen, ChevronRight } from 'lucide-react'
 import { api } from '@/services/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { Tag } from '@/components/ui/Tag'
 import { Button } from '@/components/ui/Button'
-import { signOut } from '@/services/auth.service'
-import { useSnackbar } from '@/components/ui/Snackbar'
 
 export function OnboardingHome() {
-  const { user, setUser } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
-  const { show }  = useSnackbar()
   const [trails, setTrails]   = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -21,31 +18,8 @@ export function OnboardingHome() {
       .finally(() => setLoading(false))
   }, [])
 
-  const handleSignOut = async () => {
-    await signOut()
-    setUser(null)
-    navigate('/login', { replace: true })
-    show({ message: 'Sessão encerrada com sucesso' })
-  }
-
   return (
     <div className="min-h-screen bg-[var(--color-surface-subtle)]">
-      {/* Header */}
-      <header className="bg-[var(--color-surface-default)] border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between shadow-[var(--shadow-elevation)]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[var(--color-green-500)] flex items-center justify-center">
-            <span className="text-[var(--color-text-on-brand)] font-extrabold text-[14px]">C</span>
-          </div>
-          <span className="text-[16px] font-bold text-[var(--color-text-primary)]">Clarke Onboarding</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <p className="text-[12px] text-[var(--color-text-secondary)] hidden sm:block">{user?.name}</p>
-          <Button variant="tertiary" size="small" iconLeft={<LogOut size={14} />} onClick={handleSignOut}>
-            Sair
-          </Button>
-        </div>
-      </header>
-
       {/* Content */}
       <div className="max-w-3xl mx-auto p-6">
         <div className="mb-8">

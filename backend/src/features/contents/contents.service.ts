@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ContentModel, Content } from '@models/content.model'
-import { CreateContentDto, UpdateContentDto, ListContentsDto } from './dto/contents.dto'
+import { CreateContentDto, UpdateContentDto, ListContentsDto, ListLibraryContentsDto } from './dto/contents.dto'
 
 @Injectable()
 export class ContentsService {
@@ -10,6 +10,13 @@ export class ContentsService {
     filters: ListContentsDto,
   ): Promise<{ data: Content[]; total: number; limit: number; offset: number }> {
     const { data, total } = await this.contentModel.findAll(filters)
+    return { data, total, limit: filters.limit, offset: filters.offset }
+  }
+
+  async findForLibrary(
+    filters: ListLibraryContentsDto,
+  ): Promise<{ data: Content[]; total: number; limit: number; offset: number }> {
+    const { data, total } = await this.contentModel.findForLibrary(filters)
     return { data, total, limit: filters.limit, offset: filters.offset }
   }
 

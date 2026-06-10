@@ -16,6 +16,8 @@ import {
   CreateContentSchema,
   ListContentsDto,
   ListContentsSchema,
+  ListLibraryContentsDto,
+  ListLibraryContentsSchema,
   UpdateContentDto,
   UpdateContentSchema,
 } from './dto/contents.dto'
@@ -37,6 +39,15 @@ export class ContentsController {
     @Query(new ZodValidationPipe(ListContentsSchema)) query: ListContentsDto,
   ) {
     return this.contentsService.findAll(query)
+  }
+
+  @Get('library')
+  @Roles('admin', 'collaborator')
+  @ApiOperation({ summary: 'Lista conteúdos da biblioteca (admin e colaborador, sem quizzes)' })
+  async findForLibrary(
+    @Query(new ZodValidationPipe(ListLibraryContentsSchema)) query: ListLibraryContentsDto,
+  ) {
+    return this.contentsService.findForLibrary(query)
   }
 
   @Get(':id')
