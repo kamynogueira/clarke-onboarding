@@ -3,6 +3,7 @@ import { FirebaseService } from '@core/firebase/firebase.service'
 import { FieldValue } from 'firebase-admin/firestore'
 
 export type UserRole = 'admin' | 'collaborator'
+export type UserStatus = 'active' | 'pending' | 'rejected'
 
 export interface User {
   uid: string
@@ -14,6 +15,7 @@ export interface User {
   team: string
   startDate: string
   twoFactorEnabled: boolean
+  status?: UserStatus
   twoFactorCode?: string | null
   twoFactorCodeExpiresAt?: Date | null
   createdAt: Date
@@ -56,23 +58,34 @@ export class UserModel {
     role?: UserRole
     team?: string
     position?: string
+    status?: UserStatus
     limit?: number
     offset?: number
   }): Promise<{ data: User[]; total: number }> {
-    let query = this.firebase.db
+    const snap = await this.firebase.db
       .collection(this.collection)
-      .orderBy('createdAt', 'desc') as FirebaseFirestore.Query
+      .get()
 
-    if (filters?.role) query = query.where('role', '==', filters.role)
-    if (filters?.team) query = query.where('team', '==', filters.team)
-    if (filters?.position) query = query.where('position', '==', filters.position)
+    let data = snap.docs.map((d) => ({ uid: d.id, ...d.data() }) as User)
 
-    const total = (await query.count().get()).data().count
-    if (filters?.offset) query = query.offset(filters.offset)
-    if (filters?.limit) query = query.limit(filters.limit)
+    // Sort by createdAt desc
+    data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-    const snap = await query.get()
-    const data = snap.docs.map((d) => ({ uid: d.id, ...d.data() }) as User)
+    // Status filter: when not specified, exclude pending users (backward compatible)
+    if (filters?.status) {
+      data = data.filter((u) => u.status === filters.status)
+    } else {
+      data = data.filter((u) => u.status !== 'pending' && u.status !== 'rejected')
+    }
+
+    if (filters?.role) data = data.filter((u) => u.role === filters.role)
+    if (filters?.team) data = data.filter((u) => u.team === filters.team)
+    if (filters?.position) data = data.filter((u) => u.position === filters.position)
+
+    const total = data.length
+    const offset = filters?.offset ?? 0
+    const limit = filters?.limit ?? 20
+    data = data.slice(offset, offset + limit)
 
     return { data, total }
   }

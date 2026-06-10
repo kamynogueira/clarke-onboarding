@@ -18,10 +18,14 @@ import {
 } from '@nestjs/swagger'
 import { UsersService } from './users.service'
 import {
+  ApproveUserDto,
+  ApproveUserSchema,
   CreateUserDto,
   CreateUserSchema,
   ListUsersDto,
   ListUsersSchema,
+  UpdateMeDto,
+  UpdateMeSchema,
   UpdateUserDto,
   UpdateUserSchema,
 } from './dto/users.dto'
@@ -48,7 +52,16 @@ export class UsersController {
   @Get('me')
   @ApiOperation({ summary: 'Retorna o usuário autenticado' })
   async getMe(@CurrentUser() user: DecodedIdToken) {
-    return this.usersService.findById(user.uid)
+    return this.usersService.findMe(user.uid)
+  }
+
+  @Patch('me')
+  @ApiOperation({ summary: 'Atualiza dados do usuário autenticado' })
+  async updateMe(
+    @Body(new ZodValidationPipe(UpdateMeSchema)) dto: UpdateMeDto,
+    @CurrentUser() currentUser: DecodedIdToken,
+  ) {
+    return this.usersService.updateMe(currentUser.uid, dto, currentUser.role as string)
   }
 
   @Get('teams')
@@ -63,6 +76,27 @@ export class UsersController {
   @ApiOperation({ summary: 'Lista todos os cargos existentes' })
   async getPositions() {
     return this.usersService.getPositions()
+  }
+
+  @Patch(':uid/approve')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Aprova cadastro pendente (admin)' })
+  @ApiParam({ name: 'uid', description: 'UID do usuário' })
+  async approve(
+    @Param('uid') uid: string,
+    @Body(new ZodValidationPipe(ApproveUserSchema)) dto: ApproveUserDto,
+  ) {
+    return this.usersService.approve(uid, dto)
+  }
+
+  @Patch(':uid/reject')
+  @Roles('admin')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Rejeita cadastro pendente (admin)' })
+  @ApiParam({ name: 'uid', description: 'UID do usuário' })
+  async reject(@Param('uid') uid: string) {
+    await this.usersService.reject(uid)
+    return { message: 'Cadastro rejeitado com sucesso' }
   }
 
   @Get(':uid')

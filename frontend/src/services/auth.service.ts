@@ -19,13 +19,22 @@ export async function requestLogin(email: string, password: string): Promise<Aut
   const tokenResult = await credential.user.getIdTokenResult(true)
 
   return {
-    uid: credential.user.uid,
-    email: (tokenResult.claims.userEmail as string) || credential.user.email || '',
-    name: (tokenResult.claims.displayName as string) || credential.user.displayName || '',
-    role: tokenResult.claims.role as 'admin' | 'collaborator',
-    team: (tokenResult.claims.team as string) || '',
+    uid:      credential.user.uid,
+    email:    (tokenResult.claims.userEmail as string) || credential.user.email || '',
+    name:     (tokenResult.claims.displayName as string) || credential.user.displayName || '',
+    role:     tokenResult.claims.role as 'admin' | 'collaborator',
+    team:     (tokenResult.claims.team as string) || '',
     position: (tokenResult.claims.position as string) || '',
   }
+}
+
+export async function register(data: {
+  name: string
+  email: string
+  password: string
+  phone: string
+}): Promise<void> {
+  await api.post('/auth/register', data)
 }
 
 export async function verify2FA(uid: string, code: string): Promise<AuthUser> {
@@ -36,17 +45,35 @@ export async function verify2FA(uid: string, code: string): Promise<AuthUser> {
   const tokenResult = await credential.user.getIdTokenResult(true)
 
   return {
-    uid: credential.user.uid,
-    email: (tokenResult.claims.userEmail as string) || credential.user.email || '',
-    name: (tokenResult.claims.displayName as string) || credential.user.displayName || '',
-    role: tokenResult.claims.role as 'admin' | 'collaborator',
-    team: (tokenResult.claims.team as string) || '',
+    uid:      credential.user.uid,
+    email:    (tokenResult.claims.userEmail as string) || credential.user.email || '',
+    name:     (tokenResult.claims.displayName as string) || credential.user.displayName || '',
+    role:     tokenResult.claims.role as 'admin' | 'collaborator',
+    team:     (tokenResult.claims.team as string) || '',
     position: (tokenResult.claims.position as string) || '',
   }
 }
 
 export async function resend2FA(uid: string): Promise<void> {
   await api.post('/auth/2fa/resend', { uid })
+}
+
+export async function changePassword(newPassword: string): Promise<void> {
+  await api.post('/auth/change-password', { newPassword })
+}
+
+export async function refreshCurrentUser(): Promise<AuthUser | null> {
+  const currentUser = auth.currentUser
+  if (!currentUser) return null
+  const tokenResult = await currentUser.getIdTokenResult(true)
+  return {
+    uid:      currentUser.uid,
+    email:    (tokenResult.claims.userEmail as string) || currentUser.email || '',
+    name:     (tokenResult.claims.displayName as string) || currentUser.displayName || '',
+    role:     tokenResult.claims.role as 'admin' | 'collaborator',
+    team:     (tokenResult.claims.team as string) || '',
+    position: (tokenResult.claims.position as string) || '',
+  }
 }
 
 export async function signOut(): Promise<void> {

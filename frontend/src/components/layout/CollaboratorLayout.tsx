@@ -62,10 +62,16 @@ export function CollaboratorLayout() {
 
         {/* User + logout */}
         <div className="px-3 pb-4 flex flex-col gap-1 border-t border-[var(--color-border-subtle)] pt-4">
-          <div className="px-3 py-2">
-            <p className="text-[12px] font-bold text-[var(--color-text-primary)] truncate">{user?.name}</p>
-            <p className="text-[10px] text-[var(--color-text-tertiary)] truncate">{user?.email}</p>
-          </div>
+          <button
+            onClick={() => navigate('/profile')}
+            className={clsx(
+              'flex flex-col items-start px-3 py-2 rounded-[var(--radius-sm)] w-full text-left',
+              'hover:bg-[var(--color-surface-muted)] transition-colors duration-[150ms] cursor-pointer border-none bg-transparent',
+            )}
+          >
+            <p className="text-[12px] font-bold text-[var(--color-text-primary)] truncate w-full">{user?.name}</p>
+            <p className="text-[10px] text-[var(--color-text-tertiary)] truncate w-full">{user?.email}</p>
+          </button>
           <button
             onClick={handleSignOut}
             className={clsx(

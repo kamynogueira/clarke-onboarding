@@ -106,6 +106,19 @@ export function LoginPage() {
               Entrar
             </Button>
           </form>
+
+          <div className="mt-6 pt-5 border-t border-[var(--color-border-subtle)] text-center">
+            <p className="text-[13px] text-[var(--color-text-secondary)]">
+              Ainda não tem conta?{' '}
+              <button
+                type="button"
+                onClick={() => navigate('/register')}
+                className="text-[var(--color-green-500)] font-bold hover:underline bg-transparent border-none cursor-pointer p-0"
+              >
+                Criar conta
+              </button>
+            </p>
+          </div>
         </div>
 
         <p className="text-center text-[12px] text-[var(--color-text-tertiary)] mt-6">

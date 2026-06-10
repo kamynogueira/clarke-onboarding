@@ -2,8 +2,12 @@ import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import {
+  ChangePasswordDto,
+  ChangePasswordSchema,
   LoginDto,
   LoginSchema,
+  RegisterDto,
+  RegisterSchema,
   RequestNew2FADto,
   RequestNew2FASchema,
   Verify2FADto,
@@ -11,6 +15,8 @@ import {
 } from './dto/auth.dto'
 import { ZodValidationPipe } from '@common/pipes/zod-validation.pipe'
 import { Public } from '@common/decorators/public.decorator'
+import { CurrentUser } from '@common/decorators/current-user.decorator'
+import { DecodedIdToken } from 'firebase-admin/auth'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -24,6 +30,16 @@ export class AuthController {
   @ApiOperation({ summary: 'Inicia login e envia código 2FA por e-mail' })
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password)
+  }
+
+  @Public()
+  @Post('register')
+  @HttpCode(201)
+  @UsePipes(new ZodValidationPipe(RegisterSchema))
+  @ApiOperation({ summary: 'Auto-cadastro — aguarda aprovação do admin' })
+  async register(@Body() dto: RegisterDto) {
+    await this.authService.register(dto)
+    return { message: 'Cadastro enviado com sucesso. Você receberá uma resposta por e-mail.' }
   }
 
   @Public()
@@ -44,5 +60,16 @@ export class AuthController {
     const user = await this.authService['userModel'].findById(dto.uid)
     await this.authService.send2FACode(user.uid, user.email, user.name)
     return { message: 'Código reenviado com sucesso' }
+  }
+
+  @Post('change-password')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Altera a senha do usuário autenticado' })
+  async changePassword(
+    @Body(new ZodValidationPipe(ChangePasswordSchema)) dto: ChangePasswordDto,
+    @CurrentUser() currentUser: DecodedIdToken,
+  ) {
+    await this.authService.changePassword(currentUser.uid, dto.newPassword)
+    return { message: 'Senha alterada com sucesso' }
   }
 }

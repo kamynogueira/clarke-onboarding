@@ -21,6 +21,9 @@ const ContentPage            = lazy(() => import('@/pages/collaborator/Content')
 const LibraryPage            = lazy(() => import('@/pages/collaborator/Library').then(m => ({ default: m.LibraryPage })))
 const LibraryContentViewer   = lazy(() => import('@/pages/collaborator/Library/ContentViewer').then(m => ({ default: m.LibraryContentViewer })))
 
+const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })))
+const ProfilePage  = lazy(() => import('@/pages/ProfilePage').then(m => ({ default: m.ProfilePage })))
+
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -37,8 +40,9 @@ export function App() {
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Públicas */}
-              <Route path="/login"       element={<LoginPage />} />
-              <Route path="/verify-2fa"  element={<Verify2FAPage />} />
+              <Route path="/login"      element={<LoginPage />} />
+              <Route path="/register"   element={<RegisterPage />} />
+              <Route path="/verify-2fa" element={<Verify2FAPage />} />
 
               {/* Admin */}
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
@@ -51,7 +55,7 @@ export function App() {
                 </Route>
               </Route>
 
-              {/* Colaborador */}
+              {/* Colaborador + Admin (áreas compartilhadas) */}
               <Route element={<ProtectedRoute allowedRoles={['collaborator', 'admin']} />}>
                 {/* Páginas com sidebar */}
                 <Route element={<CollaboratorLayout />}>
@@ -62,6 +66,7 @@ export function App() {
                 <Route path="/onboarding/trail/:trailId"                        element={<TrailPage />} />
                 <Route path="/onboarding/trail/:trailId/content/:itemId"        element={<ContentPage />} />
                 <Route path="/onboarding/library/:contentId"                    element={<LibraryContentViewer />} />
+                <Route path="/profile"                                          element={<ProfilePage />} />
               </Route>
 
               <Route path="/"    element={<Navigate to="/login" replace />} />

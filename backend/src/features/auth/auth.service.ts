@@ -1,11 +1,14 @@
 import {
   BadRequestException,
+  ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common'
 import { FirebaseService } from '@core/firebase/firebase.service'
 import { UserModel } from '@models/user.model'
+import { RegisterDto } from './dto/auth.dto'
 import * as nodemailer from 'nodemailer'
 
 @Injectable()
@@ -32,6 +35,18 @@ export class AuthService {
     const user = await this.userModel.findByEmail(email)
     if (!user) throw new UnauthorizedException('Credenciais inválidas')
 
+    if (user.status === 'pending') {
+      throw new ForbiddenException(
+        'Seu cadastro ainda está em análise. Você receberá uma resposta por e-mail.',
+      )
+    }
+
+    if (user.status === 'rejected') {
+      throw new ForbiddenException(
+        'Seu cadastro não foi aprovado. Entre em contato com o RH.',
+      )
+    }
+
     const customToken = await this.firebase.auth.createCustomToken(user.uid, {
       role: user.role,
       team: user.team,
@@ -41,6 +56,34 @@ export class AuthService {
     })
 
     return { customToken, uid: user.uid }
+  }
+
+  async register(dto: RegisterDto): Promise<void> {
+    const existing = await this.userModel.findByEmail(dto.email)
+    if (existing) throw new ConflictException('Já existe um cadastro com este e-mail')
+
+    const userRecord = await this.firebase.auth.createUser({
+      email: dto.email,
+      password: dto.password,
+      displayName: dto.name,
+      disabled: true,
+    })
+
+    await this.userModel.create(userRecord.uid, {
+      name: dto.name,
+      email: dto.email,
+      phone: dto.phone,
+      role: 'collaborator',
+      position: '',
+      team: '',
+      startDate: '',
+      twoFactorEnabled: true,
+      status: 'pending',
+    })
+  }
+
+  async changePassword(uid: string, newPassword: string): Promise<void> {
+    await this.firebase.auth.updateUser(uid, { password: newPassword })
   }
 
   async send2FACode(uid: string, email: string, name: string): Promise<void> {
