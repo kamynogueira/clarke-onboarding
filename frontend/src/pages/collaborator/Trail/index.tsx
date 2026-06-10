@@ -66,7 +66,7 @@ export function TrailPage() {
   }
 
   const isCompleted = (itemId: string) =>
-    progress?.completedItems?.includes(itemId) ?? false
+    progress?.items?.some((i: any) => i.itemId === itemId && i.status === 'completed') ?? false
 
   const percent = progress?.percentComplete ?? 0
 
