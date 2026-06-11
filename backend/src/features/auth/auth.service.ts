@@ -47,15 +47,9 @@ export class AuthService {
       )
     }
 
-    const customToken = await this.firebase.auth.createCustomToken(user.uid, {
-      role: user.role,
-      team: user.team,
-      position: user.position,
-      displayName: user.name,
-      userEmail: user.email,
-    })
+    await this.send2FACode(user.uid, user.email, user.name)
 
-    return { customToken, uid: user.uid }
+    return { requiresTwoFactor: true, uid: user.uid }
   }
 
   async register(dto: RegisterDto): Promise<void> {
