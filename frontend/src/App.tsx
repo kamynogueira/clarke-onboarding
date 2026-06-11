@@ -7,7 +7,6 @@ import { AdminLayout } from '@/components/layout/AdminLayout'
 import { CollaboratorLayout } from '@/components/layout/CollaboratorLayout'
 
 const LoginPage     = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })))
-const Verify2FAPage = lazy(() => import('@/pages/Verify2FAPage').then(m => ({ default: m.Verify2FAPage })))
 const AdminDashboard = lazy(() => import('@/pages/admin/Dashboard').then(m => ({ default: m.AdminDashboard })))
 
 const UsersPage    = lazy(() => import('@/pages/admin/Users').then(m => ({ default: m.UsersPage })))
@@ -42,7 +41,6 @@ export function App() {
               {/* Públicas */}
               <Route path="/login"      element={<LoginPage />} />
               <Route path="/register"   element={<RegisterPage />} />
-              <Route path="/verify-2fa" element={<Verify2FAPage />} />
 
               {/* Admin */}
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
