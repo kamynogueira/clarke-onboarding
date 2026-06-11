@@ -114,6 +114,27 @@ export function LibraryContentViewer() {
               </div>
             )}
 
+            {/* Embedded link (external website) */}
+            {content.type === 'link' && content.url && (
+              <div className="flex flex-col gap-3">
+                <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] shadow-[var(--shadow-elevation)] overflow-hidden">
+                  <iframe
+                    src={content.url}
+                    className="w-full"
+                    style={{ height: '70vh', border: 'none' }}
+                    title={content.title}
+                  />
+                </div>
+                <p className="text-[12px] text-[var(--color-text-secondary)]">
+                  Se o conteúdo não carregar,{' '}
+                  <a href={content.url} target="_blank" rel="noopener noreferrer"
+                    className="text-[var(--color-text-link)] hover:underline">
+                    clique aqui para abrir em nova aba
+                  </a>.
+                </p>
+              </div>
+            )}
+
             {/* External link */}
             {(content.url || content.youtubeId) && (
               <a

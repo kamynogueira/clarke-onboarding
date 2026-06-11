@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GripVertical, Trash2, Plus, FileText, Video, HelpCircle, FileIcon } from 'lucide-react'
+import { GripVertical, Trash2, Plus, FileText, Video, HelpCircle, FileIcon, Globe } from 'lucide-react'
 import { Button }   from '@/components/ui/Button'
 import { Select }   from '@/components/ui/Select'
 import { Tag }      from '@/components/ui/Tag'
@@ -7,13 +7,13 @@ import { api }      from '@/services/api'
 import { useSnackbar } from '@/components/ui/Snackbar'
 
 const TYPE_ICON: Record<string, any> = {
-  pdf: FileText, video: Video, quiz: HelpCircle, gdoc: FileIcon,
+  pdf: FileText, video: Video, quiz: HelpCircle, gdoc: FileIcon, link: Globe,
 }
 const TYPE_LABEL: Record<string, string> = {
-  pdf: 'PDF', video: 'Vídeo', quiz: 'Prova', gdoc: 'Google Doc',
+  pdf: 'PDF', video: 'Vídeo', quiz: 'Prova', gdoc: 'Google Doc', link: 'Link Externo',
 }
 const TYPE_THEME: Record<string, any> = {
-  pdf: 'red', video: 'blue', quiz: 'yellow', gdoc: 'green',
+  pdf: 'red', video: 'blue', quiz: 'yellow', gdoc: 'green', link: 'pink',
 }
 
 interface TrailItem { id: string; order: number; contentId: string; type: string; contentTitle?: string }
@@ -159,6 +159,7 @@ export function TrailItems({ trailId }: { trailId: string }) {
                     item.type === 'pdf' ? 'bg-[var(--color-red-100)] text-[var(--color-red-700)]'
                     : item.type === 'video' ? 'bg-[var(--color-blue-100)] text-[var(--color-blue-700)]'
                     : item.type === 'quiz' ? 'bg-[var(--color-yellow-100)] text-[var(--color-yellow-900)]'
+                    : item.type === 'link' ? 'bg-[var(--color-pink-100)] text-[var(--color-pink-500)]'
                     : 'bg-[var(--color-green-100)] text-[var(--color-green-500)]',
                   ].join(' ')}>
                     <Icon size={16} />

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { FirebaseService } from '@core/firebase/firebase.service'
 
 export type TrailStatus = 'draft' | 'published'
-export type ContentType = 'pdf' | 'video' | 'quiz' | 'gdoc'
+export type ContentType = 'pdf' | 'video' | 'quiz' | 'gdoc' | 'link'
 
 export interface TrailAssignment {
   userIds: string[]

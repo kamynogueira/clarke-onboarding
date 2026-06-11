@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, Pencil, Trash2, FileText, Video, HelpCircle, FileIcon } from 'lucide-react'
+import { Plus, Pencil, Trash2, FileText, Video, HelpCircle, FileIcon, Globe } from 'lucide-react'
 import { PageHeader }        from '@/components/ui/PageHeader'
 import { DataTable, Column } from '@/components/ui/DataTable'
 import { Button }            from '@/components/ui/Button'
@@ -13,13 +13,13 @@ import { ContentForm }       from './ContentForm'
 
 interface Content {
   id: string; title: string; description: string
-  type: 'pdf' | 'video' | 'gdoc' | 'quiz'
+  type: 'pdf' | 'video' | 'gdoc' | 'quiz' | 'link'
   url?: string; youtubeId?: string; quizId?: string; createdAt: string
 }
 
-const TYPE_LABEL: Record<string, string> = { pdf: 'PDF', video: 'Vídeo', gdoc: 'Google Doc', quiz: 'Prova' }
-const TYPE_THEME: Record<string, any>  = { pdf: 'red', video: 'blue', gdoc: 'green', quiz: 'yellow' }
-const TYPE_ICON: Record<string, any>   = { pdf: FileText, video: Video, gdoc: FileIcon, quiz: HelpCircle }
+const TYPE_LABEL: Record<string, string> = { pdf: 'PDF', video: 'Vídeo', gdoc: 'Google Doc', quiz: 'Prova', link: 'Link Externo' }
+const TYPE_THEME: Record<string, any>  = { pdf: 'red', video: 'blue', gdoc: 'green', quiz: 'yellow', link: 'pink' }
+const TYPE_ICON: Record<string, any>   = { pdf: FileText, video: Video, gdoc: FileIcon, quiz: HelpCircle, link: Globe }
 
 export function ContentsPage() {
   const { show } = useSnackbar()
@@ -52,6 +52,7 @@ export function ContentsPage() {
               c.type === 'pdf'   ? 'bg-[var(--color-red-100)] text-[var(--color-red-700)]'
               : c.type === 'video' ? 'bg-[var(--color-blue-100)] text-[var(--color-blue-700)]'
               : c.type === 'quiz'  ? 'bg-[var(--color-yellow-100)] text-[var(--color-yellow-900)]'
+              : c.type === 'link'  ? 'bg-[var(--color-pink-100)] text-[var(--color-pink-500)]'
               : 'bg-[var(--color-green-100)] text-[var(--color-green-500)]',
             ].join(' ')}>
               <Icon size={16} />
@@ -120,6 +121,7 @@ export function ContentsPage() {
               { value: 'video', label: 'Vídeo' },
               { value: 'gdoc',  label: 'Google Doc' },
               { value: 'quiz',  label: 'Prova' },
+              { value: 'link',  label: 'Link Externo' },
             ]} />
         </div>
       </div>

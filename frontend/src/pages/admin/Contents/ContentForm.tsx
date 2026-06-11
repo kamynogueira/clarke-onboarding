@@ -10,13 +10,14 @@ import { Drawer }    from '@/components/ui/Drawer'
 const baseSchema = z.object({
   title:       z.string().min(2, 'Título obrigatório'),
   description: z.string().min(5, 'Descrição obrigatória'),
-  type:        z.enum(['pdf', 'video', 'gdoc', 'quiz']),
+  type:        z.enum(['pdf', 'video', 'gdoc', 'quiz', 'link']),
   url:         z.string().optional(),
   youtubeId:   z.string().optional(),
   quizId:      z.string().optional(),
 }).superRefine((data, ctx) => {
   if (data.type === 'pdf'   && !data.url)       ctx.addIssue({ code: 'custom', path: ['url'],       message: 'URL do PDF obrigatória' })
   if (data.type === 'gdoc'  && !data.url)       ctx.addIssue({ code: 'custom', path: ['url'],       message: 'URL do Google Drive obrigatória' })
+  if (data.type === 'link'  && !data.url)       ctx.addIssue({ code: 'custom', path: ['url'],       message: 'URL do link obrigatória' })
   if (data.type === 'video' && !data.youtubeId) ctx.addIssue({ code: 'custom', path: ['youtubeId'], message: 'ID do YouTube obrigatório' })
   if (data.type === 'quiz'  && !data.quizId)    ctx.addIssue({ code: 'custom', path: ['quizId'],    message: 'ID da prova obrigatório' })
 })
@@ -33,6 +34,7 @@ const typeOptions = [
   { value: 'video', label: 'Vídeo (YouTube)' },
   { value: 'gdoc',  label: 'Google Drive' },
   { value: 'quiz',  label: 'Prova' },
+  { value: 'link',  label: 'Link Externo' },
 ]
 
 export function ContentForm({ open, onClose, onSubmit, saving, content }: ContentFormProps) {
@@ -53,6 +55,7 @@ export function ContentForm({ open, onClose, onSubmit, saving, content }: Conten
   const extraFieldByType: Record<string, { name: 'url' | 'youtubeId' | 'quizId'; label: string; placeholder: string; helper?: string }> = {
     pdf:   { name: 'url',       label: 'URL do PDF',           placeholder: 'https://...',                   helper: 'Link público do arquivo PDF' },
     gdoc:  { name: 'url',       label: 'URL do Google Drive',  placeholder: 'https://drive.google.com/...',  helper: 'Compartilhe o link com permissão de visualização' },
+    link:  { name: 'url',       label: 'URL do site',          placeholder: 'https://...',                   helper: 'URL do blog, artigo ou página web' },
     video: { name: 'youtubeId', label: 'ID do YouTube',        placeholder: 'dQw4w9WgXcQ',                   helper: 'Ex: dQw4w9WgXcQ (parte da URL após ?v=)' },
     quiz:  { name: 'quizId',    label: 'ID da Prova',          placeholder: 'ID da prova cadastrada',        helper: 'Copie o ID da prova criada na seção Provas' },
   }

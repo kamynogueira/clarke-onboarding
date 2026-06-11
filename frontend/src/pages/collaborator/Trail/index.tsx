@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { BookOpen, ChevronLeft, ChevronRight, FileText, Play, HelpCircle, LogOut, CheckCircle2 } from 'lucide-react'
+import { BookOpen, ChevronLeft, ChevronRight, FileText, Play, HelpCircle, LogOut, CheckCircle2, Globe } from 'lucide-react'
 import { api } from '@/services/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/Button'
@@ -13,6 +13,7 @@ const TYPE_ICON: Record<string, React.ReactNode> = {
   pdf:   <FileText size={18} />,
   video: <Play size={18} />,
   quiz:  <HelpCircle size={18} />,
+  link:  <Globe size={18} />,
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -20,6 +21,7 @@ const TYPE_LABEL: Record<string, string> = {
   pdf:   'PDF',
   video: 'Vídeo',
   quiz:  'Quiz',
+  link:  'Link Externo',
 }
 
 export function TrailPage() {

@@ -24,7 +24,7 @@ export const UpdateTrailSchema = CreateTrailSchema.partial()
 
 export const AddTrailItemSchema = z.object({
   contentId: z.string().min(1, 'contentId obrigatório'),
-  type: z.enum(['pdf', 'video', 'quiz', 'gdoc']),
+  type: z.enum(['pdf', 'video', 'quiz', 'gdoc', 'link']),
   order: z.number().int().min(0),
 })
 

@@ -23,6 +23,10 @@ export const CreateContentSchema = z
       type: z.literal('quiz'),
       quizId: z.string().min(1, 'quizId obrigatório'),
     }),
+    BaseContentSchema.extend({
+      type: z.literal('link'),
+      url: z.string().url('URL inválida'),
+    }),
   ])
 
 export const UpdateContentSchema = z.object({
@@ -34,13 +38,13 @@ export const UpdateContentSchema = z.object({
 })
 
 export const ListContentsSchema = z.object({
-  type: z.enum(['pdf', 'video', 'gdoc', 'quiz']).optional(),
+  type: z.enum(['pdf', 'video', 'gdoc', 'quiz', 'link']).optional(),
   limit: z.coerce.number().min(1).max(100).default(20),
   offset: z.coerce.number().min(0).default(0),
 })
 
 export const ListLibraryContentsSchema = z.object({
-  type: z.enum(['pdf', 'video', 'gdoc']).optional(),
+  type: z.enum(['pdf', 'video', 'gdoc', 'link']).optional(),
   search: z.string().optional(),
   sort: z.enum(['newest', 'oldest', 'az', 'za']).default('newest'),
   limit: z.coerce.number().min(1).max(100).default(20),

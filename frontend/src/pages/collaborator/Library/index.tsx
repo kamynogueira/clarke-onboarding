@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FileText, Play, FileSpreadsheet, Search, Library } from 'lucide-react'
+import { FileText, Play, FileSpreadsheet, Search, Library, Globe } from 'lucide-react'
 import { api } from '@/services/api'
 import { Tag } from '@/components/ui/Tag'
 import { Button } from '@/components/ui/Button'
 
-type ContentType = 'pdf' | 'video' | 'gdoc'
+type ContentType = 'pdf' | 'video' | 'gdoc' | 'link'
 
 interface Content {
   id: string
@@ -20,12 +20,14 @@ const TYPE_LABELS: Record<ContentType, string> = {
   pdf:   'PDF',
   video: 'Vídeo',
   gdoc:  'Google Doc',
+  link:  'Link Externo',
 }
 
 const TYPE_ICONS: Record<ContentType, React.ReactNode> = {
   pdf:   <FileText size={20} />,
   video: <Play size={20} />,
   gdoc:  <FileSpreadsheet size={20} />,
+  link:  <Globe size={20} />,
 }
 
 const SORT_OPTIONS = [
@@ -40,6 +42,7 @@ const TYPE_FILTER_OPTIONS: Array<{ value: ContentType | ''; label: string }> = [
   { value: 'pdf',   label: 'PDF' },
   { value: 'video', label: 'Vídeo' },
   { value: 'gdoc',  label: 'Google Doc' },
+  { value: 'link',  label: 'Link Externo' },
 ]
 
 const LIMIT = 20
