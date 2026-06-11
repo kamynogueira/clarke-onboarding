@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
 export const LoginSchema = z.object({
-  email:    z.string().email('E-mail inválido'),
-  password: z.string().min(6, 'Senha deve ter ao menos 6 caracteres'),
+  idToken: z.string().min(1, 'Token obrigatório'),
 })
 
 export const RegisterSchema = z.object({
@@ -12,21 +11,10 @@ export const RegisterSchema = z.object({
   phone:    z.string().min(10, 'Telefone inválido'),
 })
 
-export const Verify2FASchema = z.object({
-  uid:  z.string().min(1, 'UID obrigatório'),
-  code: z.string().length(6, 'Código deve ter 6 dígitos'),
-})
-
-export const RequestNew2FASchema = z.object({
-  uid: z.string().min(1, 'UID obrigatório'),
-})
-
 export const ChangePasswordSchema = z.object({
   newPassword: z.string().min(6, 'Senha deve ter ao menos 6 caracteres'),
 })
 
-export type LoginDto          = z.infer<typeof LoginSchema>
+export type LoginDto = z.infer<typeof LoginSchema>
 export type RegisterDto       = z.infer<typeof RegisterSchema>
-export type Verify2FADto      = z.infer<typeof Verify2FASchema>
-export type RequestNew2FADto  = z.infer<typeof RequestNew2FASchema>
 export type ChangePasswordDto = z.infer<typeof ChangePasswordSchema>

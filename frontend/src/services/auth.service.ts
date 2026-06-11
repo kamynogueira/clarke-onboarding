@@ -1,4 +1,4 @@
-import { signInWithCustomToken, signOut as firebaseSignOut } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth'
 import { auth } from './firebase'
 import { api } from './api'
 
@@ -11,25 +11,30 @@ export interface AuthUser {
   position: string
 }
 
-export async function requestLogin(email: string, password: string): Promise<{ uid: string }> {
-  const { data } = await api.post('/auth/login', { email, password })
-  return { uid: data.data.uid }
+function firebaseErrorMessage(code: string): string {
+  if (code === 'auth/user-disabled') return 'Seu cadastro ainda não foi aprovado ou foi rejeitado.'
+  if (code === 'auth/too-many-requests') return 'Muitas tentativas de login. Tente novamente em alguns minutos.'
+  return 'Credenciais inválidas'
 }
 
-export async function register(data: {
-  name: string
-  email: string
-  password: string
-  phone: string
-}): Promise<void> {
-  await api.post('/auth/register', data)
-}
+export async function requestLogin(email: string, password: string): Promise<AuthUser> {
+  let credential
+  try {
+    credential = await signInWithEmailAndPassword(auth, email, password)
+  } catch (err: any) {
+    const msg = firebaseErrorMessage(err.code)
+    throw Object.assign(new Error(msg), { response: { data: { message: msg } } })
+  }
 
-export async function verify2FA(uid: string, code: string): Promise<AuthUser> {
-  const { data } = await api.post('/auth/2fa/verify', { uid, code })
-  const { customToken } = data.data
+  const idToken = await credential.user.getIdToken()
 
-  const credential = await signInWithCustomToken(auth, customToken)
+  try {
+    await api.post('/auth/login', { idToken })
+  } catch (apiError) {
+    await firebaseSignOut(auth)
+    throw apiError
+  }
+
   const tokenResult = await credential.user.getIdTokenResult(true)
 
   return {
@@ -42,8 +47,13 @@ export async function verify2FA(uid: string, code: string): Promise<AuthUser> {
   }
 }
 
-export async function resend2FA(uid: string): Promise<void> {
-  await api.post('/auth/2fa/resend', { uid })
+export async function register(data: {
+  name: string
+  email: string
+  password: string
+  phone: string
+}): Promise<void> {
+  await api.post('/auth/register', data)
 }
 
 export async function changePassword(newPassword: string): Promise<void> {

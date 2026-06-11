@@ -7,6 +7,7 @@ import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { TextField } from '@/components/ui/TextField'
 import { useSnackbar } from '@/components/ui/Snackbar'
+import { useAuth } from '@/contexts/AuthContext'
 import { requestLogin } from '@/services/auth.service'
 
 const schema = z.object({
@@ -20,6 +21,7 @@ export function LoginPage() {
   const { show } = useSnackbar()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const { setUser } = useAuth()
 
   const { handleSubmit, watch, formState: { errors }, setValue } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -32,8 +34,9 @@ export function LoginPage() {
   const onSubmit = async (data: FormData) => {
     setLoading(true)
     try {
-      const { uid } = await requestLogin(data.email, data.password)
-      navigate('/verify-2fa', { state: { uid, email: data.email } })
+      const user = await requestLogin(data.email, data.password)
+      setUser(user)
+      navigate(user.role === 'admin' ? '/admin' : '/onboarding', { replace: true })
     } catch (err: any) {
       const msg = err?.response?.data?.message ?? 'Credenciais inválidas'
       show({ message: msg, type: 'default' })
