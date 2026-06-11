@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Users, BookOpen, FileText, HelpCircle, LayoutDashboard, LogOut } from 'lucide-react'
+import { Users, BookOpen, FileText, HelpCircle, LayoutDashboard, LogOut, Library } from 'lucide-react'
 import clsx from 'clsx'
 import { useAuth } from '@/contexts/AuthContext'
 import { signOut } from '@/services/auth.service'
@@ -11,6 +11,7 @@ const navItems = [
   { to: '/admin/trails',   icon: BookOpen,         label: 'Trilhas'           },
   { to: '/admin/contents', icon: FileText,         label: 'Conteúdos'         },
   { to: '/admin/quizzes',  icon: HelpCircle,       label: 'Provas'            },
+  { to: '/admin/library', icon: Library,           label: 'Biblioteca'        },
 ]
 
 export function AdminLayout() {

@@ -49,7 +49,7 @@ export function LibraryContentViewer() {
 
       <div className="max-w-3xl mx-auto p-6">
         <button
-          onClick={() => navigate('/onboarding/library')}
+          onClick={() => navigate(-1)}
           className="flex items-center gap-1 text-[12px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] mb-6 bg-transparent border-none cursor-pointer p-0"
         >
           <ChevronLeft size={14} /> Voltar para Biblioteca

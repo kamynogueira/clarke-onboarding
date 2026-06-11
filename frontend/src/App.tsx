@@ -52,7 +52,9 @@ export function App() {
                   <Route path="/admin/trails"      element={<TrailsPage />} />
                   <Route path="/admin/contents"    element={<ContentsPage />} />
                   <Route path="/admin/quizzes"     element={<QuizzesPage />} />
+                  <Route path="/admin/library"     element={<LibraryPage />} />
                 </Route>
+                <Route path="/admin/library/:contentId" element={<LibraryContentViewer />} />
               </Route>
 
               {/* Colaborador + Admin (áreas compartilhadas) */}
