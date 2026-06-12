@@ -39,22 +39,27 @@ let UserModel = class UserModel {
         return { uid: doc.id, ...doc.data() };
     }
     async findAll(filters) {
-        let query = this.firebase.db
+        const snap = await this.firebase.db
             .collection(this.collection)
-            .orderBy('createdAt', 'desc');
+            .get();
+        let data = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+        data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        if (filters?.status) {
+            data = data.filter((u) => u.status === filters.status);
+        }
+        else {
+            data = data.filter((u) => u.status !== 'pending' && u.status !== 'rejected');
+        }
         if (filters?.role)
-            query = query.where('role', '==', filters.role);
+            data = data.filter((u) => u.role === filters.role);
         if (filters?.team)
-            query = query.where('team', '==', filters.team);
+            data = data.filter((u) => u.team === filters.team);
         if (filters?.position)
-            query = query.where('position', '==', filters.position);
-        const total = (await query.count().get()).data().count;
-        if (filters?.offset)
-            query = query.offset(filters.offset);
-        if (filters?.limit)
-            query = query.limit(filters.limit);
-        const snap = await query.get();
-        const data = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+            data = data.filter((u) => u.position === filters.position);
+        const total = data.length;
+        const offset = filters?.offset ?? 0;
+        const limit = filters?.limit ?? 20;
+        data = data.slice(offset, offset + limit);
         return { data, total };
     }
     async create(uid, input) {

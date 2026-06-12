@@ -27,6 +27,9 @@ let ContentsController = class ContentsController {
     async findAll(query) {
         return this.contentsService.findAll(query);
     }
+    async findForLibrary(query) {
+        return this.contentsService.findForLibrary(query);
+    }
     async findById(id) {
         return this.contentsService.findById(id);
     }
@@ -50,6 +53,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ContentsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('library'),
+    (0, roles_decorator_1.Roles)('admin', 'collaborator'),
+    (0, swagger_1.ApiOperation)({ summary: 'Lista conteúdos da biblioteca (admin e colaborador, sem quizzes)' }),
+    __param(0, (0, common_1.Query)(new zod_validation_pipe_1.ZodValidationPipe(contents_dto_1.ListLibraryContentsSchema))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ContentsController.prototype, "findForLibrary", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Busca conteúdo por ID' }),

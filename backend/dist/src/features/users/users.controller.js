@@ -28,13 +28,23 @@ let UsersController = class UsersController {
         return this.usersService.findAll(query);
     }
     async getMe(user) {
-        return this.usersService.findById(user.uid);
+        return this.usersService.findMe(user.uid);
+    }
+    async updateMe(dto, currentUser) {
+        return this.usersService.updateMe(currentUser.uid, dto, currentUser.role);
     }
     async getTeams() {
         return this.usersService.getTeams();
     }
     async getPositions() {
         return this.usersService.getPositions();
+    }
+    async approve(uid, dto) {
+        return this.usersService.approve(uid, dto);
+    }
+    async reject(uid) {
+        await this.usersService.reject(uid);
+        return { message: 'Cadastro rejeitado com sucesso' };
     }
     async findById(uid) {
         return this.usersService.findById(uid);
@@ -68,6 +78,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getMe", null);
 __decorate([
+    (0, common_1.Patch)('me'),
+    (0, swagger_1.ApiOperation)({ summary: 'Atualiza dados do usuário autenticado' }),
+    __param(0, (0, common_1.Body)(new zod_validation_pipe_1.ZodValidationPipe(users_dto_1.UpdateMeSchema))),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateMe", null);
+__decorate([
     (0, common_1.Get)('teams'),
     (0, roles_decorator_1.Roles)('admin'),
     (0, swagger_1.ApiOperation)({ summary: 'Lista todos os times existentes' }),
@@ -83,6 +102,28 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getPositions", null);
+__decorate([
+    (0, common_1.Patch)(':uid/approve'),
+    (0, roles_decorator_1.Roles)('admin'),
+    (0, swagger_1.ApiOperation)({ summary: 'Aprova cadastro pendente (admin)' }),
+    (0, swagger_1.ApiParam)({ name: 'uid', description: 'UID do usuário' }),
+    __param(0, (0, common_1.Param)('uid')),
+    __param(1, (0, common_1.Body)(new zod_validation_pipe_1.ZodValidationPipe(users_dto_1.ApproveUserSchema))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "approve", null);
+__decorate([
+    (0, common_1.Patch)(':uid/reject'),
+    (0, roles_decorator_1.Roles)('admin'),
+    (0, common_1.HttpCode)(200),
+    (0, swagger_1.ApiOperation)({ summary: 'Rejeita cadastro pendente (admin)' }),
+    (0, swagger_1.ApiParam)({ name: 'uid', description: 'UID do usuário' }),
+    __param(0, (0, common_1.Param)('uid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "reject", null);
 __decorate([
     (0, common_1.Get)(':uid'),
     (0, roles_decorator_1.Roles)('admin'),

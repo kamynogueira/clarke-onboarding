@@ -1,31 +1,34 @@
 import { z } from 'zod';
 export declare const LoginSchema: z.ZodObject<{
+    idToken: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    idToken: string;
+}, {
+    idToken: string;
+}>;
+export declare const RegisterSchema: z.ZodObject<{
+    name: z.ZodString;
     email: z.ZodString;
     password: z.ZodString;
+    phone: z.ZodString;
 }, "strip", z.ZodTypeAny, {
+    name: string;
     email: string;
+    phone: string;
     password: string;
 }, {
+    name: string;
     email: string;
+    phone: string;
     password: string;
 }>;
-export declare const Verify2FASchema: z.ZodObject<{
-    uid: z.ZodString;
-    code: z.ZodString;
+export declare const ChangePasswordSchema: z.ZodObject<{
+    newPassword: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    uid: string;
-    code: string;
+    newPassword: string;
 }, {
-    uid: string;
-    code: string;
-}>;
-export declare const RequestNew2FASchema: z.ZodObject<{
-    uid: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    uid: string;
-}, {
-    uid: string;
+    newPassword: string;
 }>;
 export type LoginDto = z.infer<typeof LoginSchema>;
-export type Verify2FADto = z.infer<typeof Verify2FASchema>;
-export type RequestNew2FADto = z.infer<typeof RequestNew2FASchema>;
+export type RegisterDto = z.infer<typeof RegisterSchema>;
+export type ChangePasswordDto = z.infer<typeof ChangePasswordSchema>;

@@ -38,6 +38,36 @@ let ContentModel = class ContentModel {
         const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         return { data, total };
     }
+    async findForLibrary(filters) {
+        const snap = await this.firebase.db.collection(this.collection).get();
+        let data = snap.docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .filter((c) => c.type !== 'quiz');
+        if (filters.type)
+            data = data.filter((c) => c.type === filters.type);
+        if (filters.search) {
+            const term = filters.search.toLowerCase();
+            data = data.filter((c) => c.title.toLowerCase().includes(term));
+        }
+        switch (filters.sort) {
+            case 'oldest':
+                data.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+                break;
+            case 'az':
+                data.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
+                break;
+            case 'za':
+                data.sort((a, b) => b.title.localeCompare(a.title, 'pt-BR'));
+                break;
+            default:
+                data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        }
+        const total = data.length;
+        const offset = filters.offset ?? 0;
+        const limit = filters.limit ?? 20;
+        data = data.slice(offset, offset + limit);
+        return { data, total };
+    }
     async create(input) {
         const now = new Date();
         const ref = this.firebase.db.collection(this.collection).doc();

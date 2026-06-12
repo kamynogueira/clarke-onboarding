@@ -27,6 +27,16 @@ export declare class ContentModel {
         data: Content[];
         total: number;
     }>;
+    findForLibrary(filters: {
+        type?: Exclude<ContentType, 'quiz'>;
+        search?: string;
+        sort?: 'newest' | 'oldest' | 'az' | 'za';
+        limit?: number;
+        offset?: number;
+    }): Promise<{
+        data: Content[];
+        total: number;
+    }>;
     create(input: CreateContentInput): Promise<Content>;
     update(id: string, input: UpdateContentInput): Promise<Content>;
     delete(id: string): Promise<void>;

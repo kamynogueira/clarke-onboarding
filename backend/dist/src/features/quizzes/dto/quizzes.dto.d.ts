@@ -169,11 +169,11 @@ export declare const ListQuizzesSchema: z.ZodObject<{
     limit: z.ZodDefault<z.ZodNumber>;
     offset: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    offset: number;
     limit: number;
+    offset: number;
 }, {
-    offset?: number | undefined;
     limit?: number | undefined;
+    offset?: number | undefined;
 }>;
 export type CreateQuizDto = z.infer<typeof CreateQuizSchema>;
 export type UpdateQuizDto = z.infer<typeof UpdateQuizSchema>;

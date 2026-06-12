@@ -23,7 +23,7 @@ exports.CreateTrailSchema = zod_1.z.object({
 exports.UpdateTrailSchema = exports.CreateTrailSchema.partial();
 exports.AddTrailItemSchema = zod_1.z.object({
     contentId: zod_1.z.string().min(1, 'contentId obrigatório'),
-    type: zod_1.z.enum(['pdf', 'video', 'quiz', 'gdoc']),
+    type: zod_1.z.enum(['pdf', 'video', 'quiz', 'gdoc', 'link']),
     order: zod_1.z.number().int().min(0),
 });
 exports.ReorderTrailItemsSchema = zod_1.z.object({

@@ -20,6 +20,10 @@ let ContentsService = class ContentsService {
         const { data, total } = await this.contentModel.findAll(filters);
         return { data, total, limit: filters.limit, offset: filters.offset };
     }
+    async findForLibrary(filters) {
+        const { data, total } = await this.contentModel.findForLibrary(filters);
+        return { data, total, limit: filters.limit, offset: filters.offset };
+    }
     async findById(id) {
         return this.contentModel.findById(id);
     }

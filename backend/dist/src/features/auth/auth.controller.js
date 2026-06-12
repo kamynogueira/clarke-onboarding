@@ -19,20 +19,21 @@ const auth_service_1 = require("./auth.service");
 const auth_dto_1 = require("./dto/auth.dto");
 const zod_validation_pipe_1 = require("../../common/pipes/zod-validation.pipe");
 const public_decorator_1 = require("../../common/decorators/public.decorator");
+const current_user_decorator_1 = require("../../common/decorators/current-user.decorator");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     async login(dto) {
-        return this.authService.login(dto.email, dto.password);
+        return this.authService.login(dto.idToken);
     }
-    async verify2FA(dto) {
-        return this.authService.verify2FA(dto.uid, dto.code);
+    async register(dto) {
+        await this.authService.register(dto);
+        return { message: 'Cadastro enviado com sucesso. Você receberá uma resposta por e-mail.' };
     }
-    async resend2FA(dto) {
-        const user = await this.authService['userModel'].findById(dto.uid);
-        await this.authService.send2FACode(user.uid, user.email, user.name);
-        return { message: 'Código reenviado com sucesso' };
+    async changePassword(dto, currentUser) {
+        await this.authService.changePassword(currentUser.uid, dto.newPassword);
+        return { message: 'Senha alterada com sucesso' };
     }
 };
 exports.AuthController = AuthController;
@@ -41,7 +42,7 @@ __decorate([
     (0, common_1.Post)('login'),
     (0, common_1.HttpCode)(200),
     (0, common_1.UsePipes)(new zod_validation_pipe_1.ZodValidationPipe(auth_dto_1.LoginSchema)),
-    (0, swagger_1.ApiOperation)({ summary: 'Inicia login e envia código 2FA por e-mail' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Autentica usuário e retorna custom token Firebase' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -49,26 +50,25 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, public_decorator_1.Public)(),
-    (0, common_1.Post)('2fa/verify'),
-    (0, common_1.HttpCode)(200),
-    (0, common_1.UsePipes)(new zod_validation_pipe_1.ZodValidationPipe(auth_dto_1.Verify2FASchema)),
-    (0, swagger_1.ApiOperation)({ summary: 'Verifica código 2FA e retorna custom token Firebase' }),
+    (0, common_1.Post)('register'),
+    (0, common_1.HttpCode)(201),
+    (0, common_1.UsePipes)(new zod_validation_pipe_1.ZodValidationPipe(auth_dto_1.RegisterSchema)),
+    (0, swagger_1.ApiOperation)({ summary: 'Auto-cadastro — aguarda aprovação do admin' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "verify2FA", null);
+], AuthController.prototype, "register", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)('2fa/resend'),
+    (0, common_1.Post)('change-password'),
     (0, common_1.HttpCode)(200),
-    (0, common_1.UsePipes)(new zod_validation_pipe_1.ZodValidationPipe(auth_dto_1.RequestNew2FASchema)),
-    (0, swagger_1.ApiOperation)({ summary: 'Reenvia o código 2FA para o e-mail' }),
-    __param(0, (0, common_1.Body)()),
+    (0, swagger_1.ApiOperation)({ summary: 'Altera a senha do usuário autenticado' }),
+    __param(0, (0, common_1.Body)(new zod_validation_pipe_1.ZodValidationPipe(auth_dto_1.ChangePasswordSchema))),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "resend2FA", null);
+], AuthController.prototype, "changePassword", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),

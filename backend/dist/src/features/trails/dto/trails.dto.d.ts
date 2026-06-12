@@ -19,8 +19,8 @@ export declare const CreateTrailSchema: z.ZodObject<{
         userIds?: string[] | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    description: string;
     status: "draft" | "published";
+    description: string;
     title: string;
     minScoreToAdvance: number;
     assignedTo: {
@@ -61,8 +61,8 @@ export declare const UpdateTrailSchema: z.ZodObject<{
         userIds?: string[] | undefined;
     }>>>;
 }, "strip", z.ZodTypeAny, {
-    description?: string | undefined;
     status?: "draft" | "published" | undefined;
+    description?: string | undefined;
     title?: string | undefined;
     thumbnail?: string | undefined;
     minScoreToAdvance?: number | undefined;
@@ -72,8 +72,8 @@ export declare const UpdateTrailSchema: z.ZodObject<{
         userIds: string[];
     } | undefined;
 }, {
-    description?: string | undefined;
     status?: "draft" | "published" | undefined;
+    description?: string | undefined;
     title?: string | undefined;
     thumbnail?: string | undefined;
     minScoreToAdvance?: number | undefined;
@@ -85,14 +85,14 @@ export declare const UpdateTrailSchema: z.ZodObject<{
 }>;
 export declare const AddTrailItemSchema: z.ZodObject<{
     contentId: z.ZodString;
-    type: z.ZodEnum<["pdf", "video", "quiz", "gdoc"]>;
+    type: z.ZodEnum<["pdf", "video", "quiz", "gdoc", "link"]>;
     order: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
-    type: "pdf" | "video" | "quiz" | "gdoc";
+    type: "link" | "pdf" | "video" | "quiz" | "gdoc";
     order: number;
     contentId: string;
 }, {
-    type: "pdf" | "video" | "quiz" | "gdoc";
+    type: "link" | "pdf" | "video" | "quiz" | "gdoc";
     order: number;
     contentId: string;
 }>;
@@ -123,13 +123,13 @@ export declare const ListTrailsSchema: z.ZodObject<{
     limit: z.ZodDefault<z.ZodNumber>;
     offset: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    offset: number;
     limit: number;
+    offset: number;
     status?: "draft" | "published" | undefined;
 }, {
-    offset?: number | undefined;
-    limit?: number | undefined;
     status?: "draft" | "published" | undefined;
+    limit?: number | undefined;
+    offset?: number | undefined;
 }>;
 export type CreateTrailDto = z.infer<typeof CreateTrailSchema>;
 export type UpdateTrailDto = z.infer<typeof UpdateTrailSchema>;

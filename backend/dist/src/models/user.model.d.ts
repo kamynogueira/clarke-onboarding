@@ -1,5 +1,6 @@
 import { FirebaseService } from '@core/firebase/firebase.service';
 export type UserRole = 'admin' | 'collaborator';
+export type UserStatus = 'active' | 'pending' | 'rejected';
 export interface User {
     uid: string;
     name: string;
@@ -10,6 +11,7 @@ export interface User {
     team: string;
     startDate: string;
     twoFactorEnabled: boolean;
+    status?: UserStatus;
     twoFactorCode?: string | null;
     twoFactorCodeExpiresAt?: Date | null;
     createdAt: Date;
@@ -27,6 +29,7 @@ export declare class UserModel {
         role?: UserRole;
         team?: string;
         position?: string;
+        status?: UserStatus;
         limit?: number;
         offset?: number;
     }): Promise<{

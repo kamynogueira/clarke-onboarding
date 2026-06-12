@@ -7,13 +7,13 @@ export declare const CreateContentSchema: z.ZodDiscriminatedUnion<"type", [z.Zod
     url: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     description: string;
-    url: string;
     type: "pdf";
+    url: string;
     title: string;
 }, {
     description: string;
-    url: string;
     type: "pdf";
+    url: string;
     title: string;
 }>, z.ZodObject<{
     title: z.ZodString;
@@ -39,13 +39,13 @@ export declare const CreateContentSchema: z.ZodDiscriminatedUnion<"type", [z.Zod
     url: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     description: string;
-    url: string;
     type: "gdoc";
+    url: string;
     title: string;
 }, {
     description: string;
-    url: string;
     type: "gdoc";
+    url: string;
     title: string;
 }>, z.ZodObject<{
     title: z.ZodString;
@@ -63,6 +63,22 @@ export declare const CreateContentSchema: z.ZodDiscriminatedUnion<"type", [z.Zod
     type: "quiz";
     title: string;
     quizId: string;
+}>, z.ZodObject<{
+    title: z.ZodString;
+    description: z.ZodString;
+} & {
+    type: z.ZodLiteral<"link">;
+    url: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    description: string;
+    type: "link";
+    url: string;
+    title: string;
+}, {
+    description: string;
+    type: "link";
+    url: string;
+    title: string;
 }>]>;
 export declare const UpdateContentSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
@@ -84,18 +100,38 @@ export declare const UpdateContentSchema: z.ZodObject<{
     quizId?: string | undefined;
 }>;
 export declare const ListContentsSchema: z.ZodObject<{
-    type: z.ZodOptional<z.ZodEnum<["pdf", "video", "gdoc", "quiz"]>>;
+    type: z.ZodOptional<z.ZodEnum<["pdf", "video", "gdoc", "quiz", "link"]>>;
     limit: z.ZodDefault<z.ZodNumber>;
     offset: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    offset: number;
     limit: number;
-    type?: "pdf" | "video" | "quiz" | "gdoc" | undefined;
+    offset: number;
+    type?: "link" | "pdf" | "video" | "quiz" | "gdoc" | undefined;
 }, {
-    offset?: number | undefined;
+    type?: "link" | "pdf" | "video" | "quiz" | "gdoc" | undefined;
     limit?: number | undefined;
-    type?: "pdf" | "video" | "quiz" | "gdoc" | undefined;
+    offset?: number | undefined;
+}>;
+export declare const ListLibraryContentsSchema: z.ZodObject<{
+    type: z.ZodOptional<z.ZodEnum<["pdf", "video", "gdoc", "link"]>>;
+    search: z.ZodOptional<z.ZodString>;
+    sort: z.ZodDefault<z.ZodEnum<["newest", "oldest", "az", "za"]>>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    offset: z.ZodDefault<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    sort: "newest" | "oldest" | "az" | "za";
+    limit: number;
+    offset: number;
+    search?: string | undefined;
+    type?: "link" | "pdf" | "video" | "gdoc" | undefined;
+}, {
+    search?: string | undefined;
+    type?: "link" | "pdf" | "video" | "gdoc" | undefined;
+    sort?: "newest" | "oldest" | "az" | "za" | undefined;
+    limit?: number | undefined;
+    offset?: number | undefined;
 }>;
 export type CreateContentDto = z.infer<typeof CreateContentSchema>;
 export type UpdateContentDto = z.infer<typeof UpdateContentSchema>;
 export type ListContentsDto = z.infer<typeof ListContentsSchema>;
+export type ListLibraryContentsDto = z.infer<typeof ListLibraryContentsSchema>;

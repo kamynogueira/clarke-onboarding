@@ -1,16 +1,16 @@
 import { AuthService } from './auth.service';
-import { LoginDto, RequestNew2FADto, Verify2FADto } from './dto/auth.dto';
+import { ChangePasswordDto, LoginDto, RegisterDto } from './dto/auth.dto';
+import { DecodedIdToken } from 'firebase-admin/auth';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     login(dto: LoginDto): Promise<{
-        customToken: string;
         uid: string;
     }>;
-    verify2FA(dto: Verify2FADto): Promise<{
-        customToken: string;
+    register(dto: RegisterDto): Promise<{
+        message: string;
     }>;
-    resend2FA(dto: RequestNew2FADto): Promise<{
+    changePassword(dto: ChangePasswordDto, currentUser: DecodedIdToken): Promise<{
         message: string;
     }>;
 }
